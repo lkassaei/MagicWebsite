@@ -1,43 +1,63 @@
-document.getElementById("submit-btn").addEventListener("click", function () {
-    let markdown = "# Quiz Answers\n\n";
+/* -------------------------------------------------------------
+ *  script.js  –  front‑end logic for Charity‑Match
+ *
+ *  1.  Change BACKEND_BASE to where your Flask server is running.
+ *      • Local dev:  'http://127.0.0.1:5000'
+ *      • Codespaces: 'https://<codespace‑id>-5000.app.github.dev'
+ *      • Render/Heroku/etc.: your deployed domain
+ *
+ *  2.  Ensure index.html uses the same field names:
+ *      cause, groups, region, faith, support
+ * ------------------------------------------------------------ */
+const BACKEND_BASE = 'http://127.0.0.1:5000';   //  ← EDIT ME!
 
-    // Define the questions with their labels
-    const questions = [
-        { name: "cause", label: "### 1. What cause matters most to you?" },
-        { name: "groups", label: "### 2. Do you prefer to help specific groups?" }
-        // Include additional questions as needed
-    ];
+document.addEventListener('DOMContentLoaded', () => {
+  const submitBtn  = document.getElementById('submit-btn');
+  const resultsBox = document.getElementById('results-container');
+  const resultsEl  = document.getElementById('results');
 
-    // Loop through each question and build the markdown string from selected answers
-    questions.forEach(question => {
-        let selectedOptions = document.querySelectorAll(`input[name="${question.name}"]:checked`);
-        let selectedValues = Array.from(selectedOptions)
-            .map(option => `- ${option.value}`)
-            .join("\n");
+  /* ---------- helpers to collect form data ---------------- */
+  const getRadio = name =>
+    (document.querySelector(`input[name="${name}"]:checked`) || {}).value || null;
 
-        markdown += `${question.label}\n${selectedValues || "- No answer selected"}\n\n`;
-    });
+  const getChecks = name =>
+    Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+         .map(el => el.value);
 
-    // Show the generated markdown in the results container
-    document.getElementById("results").textContent = markdown;
-    document.getElementById("results-container").style.display = "block";
+  /* ---------- main click handler -------------------------- */
+  submitBtn.addEventListener('click', () => {
+    /* 1. Gather answers from the form */
+    const answers = {
+      cause:   getRadio('cause'),
+      groups:  getChecks('groups'),
+      region:  getRadio('region'),
+      faith:   getRadio('faith'),
+      support: getRadio('support')
+    };
 
-    // IMPORTANT: Change the URL below to your deployed backend's domain.
-    fetch('https://your-backend-domain.com/api/charity-match', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ quiz_markdown: markdown })
+    /* 2. Show the captured answers (optional) */
+    resultsEl.textContent = 'Your answers:\n' +
+                            JSON.stringify(answers, null, 2);
+    resultsBox.style.display = 'block';
+
+    /* 3. POST answers to the backend */
+    fetch(`${BACKEND_BASE}/api/charity-match`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answers })
     })
-    .then(response => response.json())
-    .then(data => {
-        // Append the backend response to the results container
-        console.log('API response:', data);
-        document.getElementById("results").textContent += "\n\nCharity Matches:\n" + JSON.stringify(data, null, 2);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById("results").textContent += "\n\nError calling the backend API.";
-    });
+      .then(res => {
+        if (!res.ok) throw new Error(`Backend returned ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        /* 4. Display Llama’s reply */
+        resultsEl.textContent +=
+          '\n\nLlama says:\n' + JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        console.error(err);
+        resultsEl.textContent += '\n\n⚠️  Error calling backend.';
+      });
+  });
 });
