@@ -1,7 +1,10 @@
 body {
-    background-color: #3165f8;
-    color: white;
+    background: #3165f8;
+    color: #fff;
     font-family: Arial, sans-serif;
+    padding: 40px 10px;
     text-align: center;
-    padding: 50px;
-}
+  }
+  fieldset { margin: 20px auto; max-width: 500px; text-align: left; }
+  button   { padding: 10px 25px; font-size: 1rem; cursor: pointer; }
+  pre      { white-space: pre-wrap; text-align: left; }
