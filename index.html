@@ -1,37 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Charity Match Quiz</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8" />
+  <title>Charity‑Match Quiz</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Charity Match Quiz</h1>
-    <form id="quiz-form">
-        <p>What cause matters most to you?</p>
-        <input type="radio" name="cause" value="Education" id="cause1">
-        <label for="cause1">Education</label><br>
-        <input type="radio" name="cause" value="Healthcare" id="cause2">
-        <label for="cause2">Healthcare</label><br>
-        <input type="radio" name="cause" value="Environment" id="cause3">
-        <label for="cause3">Environment</label><br>
+  <h1>Find Your Perfect Charity</h1>
 
-        <p>Do you prefer to help specific groups?</p>
-        <input type="radio" name="groups" value="Youth" id="group1">
-        <label for="group1">Youth</label><br>
-        <input type="radio" name="groups" value="Women" id="group2">
-        <label for="group2">Women</label><br>
-        <input type="radio" name="groups" value="Elderly" id="group3">
-        <label for="group3">Elderly</label><br>
+  <!-- ===================  QUIZ FORM  =================== -->
+  <form id="quiz-form">
+    <!-- Q1 -->
+    <fieldset>
+      <legend>1. What cause matters most to you?</legend>
+      <label><input type="radio" name="cause" value="Education"  /> Education</label><br />
+      <label><input type="radio" name="cause" value="Healthcare" /> Healthcare</label><br />
+      <label><input type="radio" name="cause" value="Environment" /> Environment</label><br />
+      <label><input type="radio" name="cause" value="Food Security" /> Food Security</label>
+    </fieldset>
 
-        <!-- Add more questions as needed -->
+    <!-- Q2 -->
+    <fieldset>
+      <legend>2. Do you prefer to help specific groups? <em>(check all that apply)</em></legend>
+      <label><input type="checkbox" name="groups" value="Children" /> Children</label><br />
+      <label><input type="checkbox" name="groups" value="Women"   /> Women</label><br />
+      <label><input type="checkbox" name="groups" value="Refugees" /> Refugees</label>
+    </fieldset>
 
-        <button type="button" id="submit-btn">Submit Quiz</button>
-    </form>
+    <!-- Q3 -->
+    <fieldset>
+      <legend>3. Do you want to focus on a specific region?</legend>
+      <label><input type="radio" name="region" value="Middle East" /> Middle East</label><br />
+      <label><input type="radio" name="region" value="Global"      /> Global</label>
+    </fieldset>
 
-    <div id="results-container" style="display: none;">
-        <h2>Quiz Markdown & Charity Matches:</h2>
-        <pre id="results"></pre>
-    </div>
-    <script src="script.js"></script>
+    <!-- Q4 -->
+    <fieldset>
+      <legend>4. Do you prefer faith‑based charities?</legend>
+      <label><input type="radio" name="faith" value="Yes" /> Yes</label><br />
+      <label><input type="radio" name="faith" value="No"  /> No</label>
+    </fieldset>
+
+    <!-- Q5 -->
+    <fieldset>
+      <legend>5. Would you rather support urgent relief or long‑term change?</legend>
+      <label><input type="radio" name="support" value="Urgent Relief"   /> Urgent Relief</label><br />
+      <label><input type="radio" name="support" value="Long‑term Change" /> Long‑term Change</label>
+    </fieldset>
+
+    <button type="button" id="submit-btn">Get Matches</button>
+  </form>
+
+  <!-- ===================  RESULTS  =================== -->
+  <div id="results-container" style="display:none">
+    <h2>Your Answers &amp; Llama’s Matches</h2>
+    <pre id="results"></pre>
+  </div>
+
+  <!-- Script -->
+  <script src="script.js"></script>
 </body>
 </html>
