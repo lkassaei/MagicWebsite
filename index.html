@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My GitHub Pages Website</title>
+    <title>My Charity Match Quiz</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <h1>Hello, world!</h1>
-    <p>Welcome to my website hosted on GitHub Pages.</p>
+    <h1>Charity Match Quiz</h1>
+    <form id="quiz-form">
+        <p>What cause matters most to you?</p>
+        <input type="radio" name="cause" value="Education" id="cause1">
+        <label for="cause1">Education</label><br>
+        <input type="radio" name="cause" value="Healthcare" id="cause2">
+        <label for="cause2">Healthcare</label><br>
+        <input type="radio" name="cause" value="Environment" id="cause3">
+        <label for="cause3">Environment</label><br>
+
+        <p>Do you prefer to help specific groups?</p>
+        <input type="radio" name="groups" value="Youth" id="group1">
+        <label for="group1">Youth</label><br>
+        <input type="radio" name="groups" value="Women" id="group2">
+        <label for="group2">Women</label><br>
+        <input type="radio" name="groups" value="Elderly" id="group3">
+        <label for="group3">Elderly</label><br>
+
+        <!-- Add more questions as needed -->
+
+        <button type="button" id="submit-btn">Submit Quiz</button>
+    </form>
+
+    <div id="results-container" style="display: none;">
+        <h2>Quiz Markdown & Charity Matches:</h2>
+        <pre id="results"></pre>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
