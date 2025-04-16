@@ -122,7 +122,7 @@ You are a helpful assistant that recommends charities.
 User preferences:
 {prefs}
 
-From the charity list below, choose the best match.
+From the charity list below, choose the closest match.
 Return charity name, description, and link.
 
 {CHARITIES}
@@ -163,3 +163,4 @@ Return charity name, description, and link.
 # ---------- entry‑point -----------------------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=True)
+
