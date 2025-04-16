@@ -1,3 +1,73 @@
+document.getElementById("submit-btn").addEventListener("click", function () {
+  // Get the selected values
+  const answers = {
+    cause: getSelectedValue("cause"),
+    groups: getSelectedValue("groups"),
+    region: getSelectedValue("region"),
+    faith: getSelectedValue("faith"),
+    support: getSelectedValue("support"),
+  };
+
+  const matchedCharity = getTopMatch(answers);  // Find the top match
+  const otherCharities = charityList.filter(c => c.charity !== matchedCharity.charity);  // Remaining charities
+
+  // Show top match in the result section
+  const resultText = document.getElementById("result-text");
+  resultText.innerHTML = `
+    <h3>Your Top Match</h3>
+    <p><strong>${matchedCharity.charity}</strong></p>
+    <p>${matchedCharity.description}</p>
+    <p><a href="${matchedCharity.donationLink}" target="_blank">Visit Charity</a></p>
+  `;
+
+  // Show the remaining charities in two rows
+  const charityListContainer = document.getElementById("charity-list-container");
+  charityListContainer.innerHTML = "<h3>Other Charities</h3>";
+
+  const rowDiv = document.createElement("div");
+  rowDiv.className = "charity-list-row";  // Start a new row
+
+  // Loop through remaining charities and display them in columns
+  otherCharities.forEach((charity, index) => {
+    const card = document.createElement("div");
+    card.className = "charity-list-column";
+    card.innerHTML = `
+      <p><strong>${charity.charity}</strong></p>
+      <p>${charity.description}</p>
+      <p><a href="${charity.donationLink}" target="_blank">Visit Charity</a></p>
+    `;
+    rowDiv.appendChild(card);
+
+    // If 2 charities are in the row, append the row and reset for the next row
+    if ((index + 1) % 2 === 0) {
+      charityListContainer.appendChild(rowDiv);
+      rowDiv.className = "charity-list-row";  // Reset row
+    }
+  });
+
+  // If the remaining charities number is odd, append the last row
+  if (otherCharities.length % 2 !== 0) {
+    charityListContainer.appendChild(rowDiv);
+  }
+
+  // Show the result and charity list sections
+  document.getElementById("results-container").style.display = "block";
+  charityListContainer.style.display = "block";
+});
+
+// Utility function to get selected value from a group of radio buttons
+function getSelectedValue(name) {
+  const selected = document.querySelector(`input[name="${name}"]:checked`);
+  return selected ? selected.value : "";
+}
+
+// Find the charity that best matches the selected answers (this is simplified logic for now)
+function getTopMatch(answers) {
+  // In this example, we're just picking the first charity. In a real scenario, you'd have logic to compare answers.
+  return charityList[0];  // For testing, replace this with a real matching function
+}
+
+
 // Static charity list with name, description, and donation link
 const charityList = [
   {
@@ -81,101 +151,9 @@ const charityList = [
     donationLink: "https://www.savethechildren.org/us/what-we-do/where-we-work/greater-middle-east-eurasia"
   },
   {
-    charity: "Action Against Hunger",
-    description: "Action Against Hunger combats food insecurity and malnutrition in the Middle East by providing emergency food aid and sustainable farming solutions. Their projects include distributing food parcels and supporting communities in developing long-term food production. They focus on addressing the root causes of hunger and building resilience.",
-    donationLink: "https://www.actionagainsthunger.org/donate"
+    charity: "The Carter Center",
+    description: "The Carter Center is dedicated to advancing peace, democracy, and human rights, with a focus on health and development initiatives in the Middle East. Their efforts include promoting conflict resolution, preventing disease outbreaks, and supporting human rights projects across the region.",
+    donationLink: "https://www.cartercenter.org/donate/"
   }
 ];
 
-// Wait until the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-  const submitBtn  = document.getElementById('submit-btn');
-  const resultsBox = document.getElementById('results-container');
-  const resultText  = document.getElementById('result-text');
-
-  const getRadio = n =>
-    (document.querySelector(`input[name="${n}"]:checked`) || {}).value || null;
-
-  const getChecks = n =>
-    Array.from(document.querySelectorAll(`input[name="${n}"]:checked`))
-         .map(el => el.value);
-
-  submitBtn.addEventListener('click', () => {
-    const answers = {
-      cause:   getRadio('cause'),
-      groups:  getChecks('groups'),
-      region:  getRadio('region'),
-      faith:   getRadio('faith'),
-      support: getRadio('support')
-    };
-
-    // Show results container
-    resultsBox.style.display = 'block';
-
-    // Send answers to the backend API
-    fetch('/api/charity-match', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers })
-    })
-      .then(r => { 
-        if (!r.ok) throw new Error(r.statusText); 
-        return r.json(); 
-      })
-      .then(data => {
-        console.log("API Response:", data); // Log the full API response for debugging
-
-        // Check if the response has the expected structure
-        if (data && data.choices && data.choices.length > 0) {
-          const aiResult = data.choices[0].message.content;
-          console.log("AI Result:", aiResult); // Log the raw result from the AI
-
-          // Extract charity name, description, and donation link
-          const charityMatch = aiResult.match(/\*\*(.*?)\*\*/); // Match bolded charity name
-          const descriptionMatch = aiResult.match(/- \*\*Description\*\*:(.*?)\n/);  // Match description
-          const donationLinkMatch = aiResult.match(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/); // Match donation link
-
-          if (charityMatch && descriptionMatch && donationLinkMatch) {
-            const charity = charityMatch[1];
-            const description = descriptionMatch[1].trim();
-            const donationLink = donationLinkMatch[2];
-
-            // Dynamically display the result from the API
-            resultText.innerHTML = `
-              <strong>${charity}</strong><br />
-              <p>${description}</p>
-              <a href="${donationLink}" target="_blank">Donate to ${charity}</a>
-            `;
-          } else {
-            console.error("Error extracting data from AI response.");
-            resultText.innerHTML = '⚠️ Unable to parse AI response properly.';
-          }
-        } else {
-          console.error("No valid data received from backend.");
-          resultText.innerHTML = '⚠️ No charity match found or invalid data received.';
-        }
-
-        // Display the static charity list under the result
-        const staticCharityListHTML = charityList.map(charity => `
-          <div class="charity-result">
-            <strong>${charity.charity}</strong><br />
-            <p>${charity.description}</p>
-            <a href="${charity.donationLink}" target="_blank">Donate to ${charity.charity}</a>
-          </div>
-        `).join('');
-
-        // Append the static charity list below the result
-        resultText.innerHTML += `
-          <h3>Other Charities You Can Support:</h3>
-          ${staticCharityListHTML}
-        `;
-
-        resultsBox.style.display = 'block'; // Ensure the results box is visible
-      })
-      .catch(err => {
-        console.error(err);
-        resultText.innerHTML = '⚠️ Error calling backend.';
-        resultsBox.style.display = 'block';
-      });
-  });
-});
