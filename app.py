@@ -101,7 +101,23 @@ CHARITIES = "# List of Charities\n\n" \
     + "### Action Against Hunger\n" \
     + "- **Type**: Food Security and Nutrition\n" \
     + "- **Impact**: Action Against Hunger combats food insecurity and malnutrition in the Middle East by providing emergency food aid and sustainable farming solutions. Their projects include distributing food parcels and supporting communities in developing long-term food production. They focus on addressing the root causes of hunger and building resilience.\n" \
-    + "[Donation Page](https://www.actionagainsthunger.org/donate)"
+    + "[Donation Page](https://www.actionagainsthunger.org/donate)\n\n" \
+    + "### Mahak Society to Support Children with Cancer\n" \
+    + "- **Type**: Pediatric Cancer Support\n" \
+    + "- **Impact**: Mahak is one of the most respected nonprofit organizations in Iran, dedicated to supporting children with cancer and their families. They provide high-quality treatment, emotional support, and financial assistance. Their state-of-the-art hospital in Tehran is internationally accredited and offers comprehensive care regardless of financial status.\n" \
+    + "[Donation Page](https://www.mahak-charity.org/main/index.php/en/how-to-help/donate-online)\n\n" \
+    + "### Imam Ali's Popular Students Relief Society\n" \
+    + "- **Type**: Poverty Alleviation and Social Support\n" \
+    + "- **Impact**: A grassroots, student-led charity organization in Iran that helps children and families living in poverty. Their initiatives range from education and healthcare to emergency housing and psychological support. The group is known for its community-based development model and long-term commitment to vulnerable populations.\n" \
+    + "[Donation Page](https://www.sosapoverty.org/en/)\n\n" \
+    + "### Persian Wildlife Foundation\n" \
+    + "- **Type**: Environmental Conservation\n" \
+    + "- **Impact**: The Persian Wildlife Foundation works to preserve Iran’s natural heritage through research, education, and conservation projects. They focus on endangered species, environmental education, and supporting local communities in sustainable development. Their efforts help protect Iran's unique biodiversity and natural ecosystems.\n" \
+    + "[Donation Page](https://www.persianwildlife.org/)\n\n" \
+    + "### Children of Persia\n" \
+    + "- **Type**: Child Welfare and Education\n" \
+    + "- **Impact**: Children of Persia is a U.S.-based nonprofit that supports health, education, and welfare projects for children in Iran. They fund surgeries, distribute school supplies, and provide financial assistance to families in need. Their goal is to offer opportunities for children to live healthier, more dignified lives.\n" \
+    + "[Donation Page](https://www.childrenofpersia.org/donate/)"
 
 @app.post("/api/charity-match")
 def charity_match():
@@ -122,7 +138,7 @@ You are a helpful assistant that recommends charities.
 User preferences:
 {prefs}
 
-From the charity list below, choose the closest match.
+From the charity list below, choose the best match.
 Return charity name, description, and link.
 
 {CHARITIES}
@@ -163,4 +179,3 @@ Return charity name, description, and link.
 # ---------- entry‑point -----------------------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=True)
-
