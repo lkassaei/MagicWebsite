@@ -166,10 +166,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
 
-          // 2. Extract Description (look for the text after "- **Description**:")
-          const descriptionMatch = aiResult.match(/(?:- \*\*Description\*\*|- \*\*Impact\*\*)\s*:\s*(.*?)(?:\n- \*\*|\n\[|\n|$)/si);
-          if (descriptionMatch) {
-            description = descriptionMatch[1].trim();
+          // 2. Extract Description (specifically look for text after "**Description:**")
+          const descriptionLabelMatch = aiResult.match(/\*\*Description:\*\*\s*(.*?)(?=\n\*\*Link:\*\*|\nThis charity|\n|$)/si);
+          if (descriptionLabelMatch && descriptionLabelMatch[1]) {
+            description = descriptionLabelMatch[1].trim();
+          } else {
+            // Fallback to previous more general attempts if "**Description:**" label isn't found
+            let descriptionMatch;
+            if (matchedCharity) {
+              const escapedCharity = matchedCharity.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              descriptionMatch = aiResult.match(new RegExp(`${escapedCharity}\\s*(.*?)(\\n(?:- \\*\\*Link\\*\\*|\\[|\n###|\\*\\*\\*)|$)`, 'si'));
+              if (descriptionMatch && descriptionMatch[1]) {
+                description = descriptionMatch[1].trim().replace(/^- \*\*Description\*\*:\s*/i, '').trim();
+              } else {
+                descriptionMatch = aiResult.match(/(?:- \*\*Description\*\*|- \*\*Impact\*\*)\s*:\s*(.*?)(?:\n- \*\*|\n\[|\n###|\*\*\*|$)/si);
+                if (descriptionMatch) {
+                  description = descriptionMatch[1].trim();
+                }
+              }
+            }
           }
 
           // 3. Extract Donation Link (look for Markdown link with "Donation Page" text)
